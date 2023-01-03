@@ -1,6 +1,7 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from config import bot, dp
 from aiogram import types, Dispatcher
+from parsersss.news import ParserNews
 
 
 # @dp.message_handler(commands=['start'])
@@ -49,8 +50,18 @@ async def mem(message: types.Message):
     await bot.send_photo(message.from_user.id, photo=photo)
 
 
+async def parser_news(message: types.Message):
+    news = ParserNews.parser()
+    for i in news:
+        await message.answer(f"{i['link']}\n"
+                             f"{i['title']}\n"
+                             f"{i['caption']}\n"
+                             f"{i['date']}\n")
+
+
 def register_handler_client(dp: Dispatcher):
     dp.register_message_handler(start, commands=['start'])
     dp.register_message_handler(mem, commands=['mem'])
     dp.register_message_handler(quiz_1, commands=['quiz'])
     dp.register_message_handler(pin_message, commands=['pin'], commands_prefix='!/')
+    dp.register_message_handler(parser_news, commands=['news'])
